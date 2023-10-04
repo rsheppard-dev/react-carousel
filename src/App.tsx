@@ -1,7 +1,11 @@
-import Slider from './components/Slider';
+import ImageSlider from './components/ImageSlider';
 
 function App() {
-	return <Slider />;
+	return (
+		<main>
+			<ImageSlider />
+		</main>
+	);
 }
 
 export default App;
