@@ -1,6 +1,13 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { SliderOptions } from '../types/ImageSlider';
 
-export default function useSlider<T>(slides: T[], timer?: number) {
+const defaultOptions: SliderOptions = {
+	motion: 'alternate',
+};
+export default function useSlider<T>(
+	slides: T[],
+	options: SliderOptions = defaultOptions
+) {
 	const timerRef = useRef<ReturnType<typeof setTimeout>>();
 	const [slideIndex, setSlideIndex] = useState(0);
 	const [direction, setDirection] = useState(1);
@@ -31,7 +38,7 @@ export default function useSlider<T>(slides: T[], timer?: number) {
 	}
 
 	useEffect(() => {
-		if (!timer) return;
+		if (!options?.timer) return;
 
 		if (isFirstSlide) setDirection(1);
 		if (isLastSlide) setDirection(-1);
@@ -39,11 +46,21 @@ export default function useSlider<T>(slides: T[], timer?: number) {
 		clearTimeout(timerRef.current);
 
 		timerRef.current = setTimeout(() => {
-			direction > 0 ? nextSlide() : previousSlide();
-		}, timer * 1000);
+			direction > 0 || options.motion === 'linear'
+				? nextSlide()
+				: previousSlide();
+		}, options.timer * 1000);
 
 		return () => clearTimeout(timerRef.current);
-	}, [direction, isFirstSlide, isLastSlide, nextSlide, previousSlide, timer]);
+	}, [
+		direction,
+		isFirstSlide,
+		isLastSlide,
+		nextSlide,
+		options.motion,
+		options.timer,
+		previousSlide,
+	]);
 
 	return {
 		slideIndex,

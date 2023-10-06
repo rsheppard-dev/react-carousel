@@ -13,22 +13,24 @@ export default function ImageSlider() {
 		nextSlide,
 		previousSlide,
 		goToSlide,
-	} = useSlider(images, 5);
+	} = useSlider(images, { timer: 2, motion: 'linear' });
+
 	return (
-		<section className='relative max-w-4xl h-[500px] mx-auto mt-10 overflow-hidden'>
-			<div
-				style={{
-					width: `${images.length * 100}%`,
-					transform: `translateX(-${slideIndex * (100 / images.length)}%)`,
-				}}
-				className='absolute flex inset-0 transition-transform duration-300'
-			>
-				{images.map(image => (
+		<section
+			title='Image Slider'
+			className='relative w-full h-full aspect-w-9 aspect-h-6 overflow-hidden'
+		>
+			<div className='w-full h-full flex'>
+				{images.map((image, index) => (
 					<img
 						key={image.url}
+						aria-hidden={slideIndex !== index}
 						src={image.url}
 						alt={image.title}
-						className='w-full object-cover'
+						style={{
+							transform: `translateX(-${slideIndex * 100}%)`,
+						}}
+						className='object-cover w-full h-full transition-transform ease-in-out duration-300 grow-0 shrink-0'
 					/>
 				))}
 			</div>
@@ -41,7 +43,7 @@ export default function ImageSlider() {
 						className='disabled:opacity-20 enabled:hover:scale-110 transition-transform'
 					>
 						<BsFillArrowLeftSquareFill
-							title='Previous'
+							aria-hidden
 							onClick={previousSlide}
 							className='fill-white h-8 w-8'
 						/>
@@ -52,7 +54,7 @@ export default function ImageSlider() {
 					{images.map((_, i) => (
 						<button
 							key={i}
-							title={`Slide #${i}`}
+							title={`Slide #${i + 1}`}
 							disabled={i === slideIndex}
 							onClick={() => goToSlide(i)}
 							className='rounded-full w-4 h-4 bg-white/60 disabled:bg-white shadow-md enabled:hover:scale-110 enabled:hover:border-2 border-white transition-all'
@@ -67,7 +69,7 @@ export default function ImageSlider() {
 						className='disabled:opacity-20 enabled:hover:scale-110 transition-transform'
 					>
 						<BsFillArrowRightSquareFill
-							title='Next'
+							aria-hidden
 							onClick={nextSlide}
 							className='fill-white h-8 w-8'
 						/>
